@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const { ObjectID, ObjectId } = require('bson');
 const app = express();
 const port = process.env.PORT || 5000;
 require('dotenv').config();
@@ -11,7 +12,6 @@ app.use(express.json());
 
 //MongoDB
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@learnph.159fxoq.mongodb.net/?retryWrites=true&w=majority`;
-console.log(uri);
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 const run = async() =>{
     try{
@@ -21,7 +21,15 @@ const run = async() =>{
         const cursor = packagesCollection.find(query);
         const packages = await cursor.toArray();
         res.send(packages);
-    })
+    });
+
+    app.get('/packages/:id', async(req, res) =>{
+        const id = req.params.id;
+        const query = {_id: ObjectId(id)};
+        console.log(query);
+        const eachPackage = await packagesCollection.findOne(query);
+        res.send(eachPackage);
+    });
     }
     finally{
         // client.close();
