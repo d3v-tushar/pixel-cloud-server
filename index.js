@@ -24,6 +24,13 @@ const run = async() =>{
         res.send(packages);
     });
 
+    app.get('/packages/home', async(req, res) =>{
+        const query = {};
+        const cursor = packagesCollection.find(query).limit(3);
+        const packages = await cursor.toArray();
+        res.send(packages);
+    });
+
     app.get('/packages/:id', async(req, res) =>{
         const id = req.params.id;
         const query = {_id: ObjectId(id)};
