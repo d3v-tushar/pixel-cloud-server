@@ -38,6 +38,13 @@ const run = async() =>{
         res.send(eachPackage);
     });
 
+    app.post('/packages', async(req, res) =>{
+        const review = req.body;
+        console.log(review);
+        const result = await packagesCollection.insertOne(review);
+        res.send(result);
+    });
+
     app.get('/reviews', async(req, res) =>{
         const query = {};
         const cursor = reviewsCollection.find(query);
@@ -46,14 +53,40 @@ const run = async() =>{
     });
 
     app.get('/reviews', async(req, res) =>{
-        console.log(req.query);
         let query = {};
         if(req.query.packageId){
-            query = {packageId: req.query.packageId};
+            query = {
+                packageId: req.query.packageId
+            }
         }
         const cursor = reviewsCollection.find(query);
         const reviews = await cursor.toArray();
         res.send(reviews);
+    });
+
+    app.get('/reviews', async(req, res) =>{
+        let query = {};
+        if(req.query.email){
+            query = {
+                email: req.query.email
+            }
+        }
+        const cursor = reviewsCollection.find(query);
+        const reviews = await cursor.toArray();
+        res.send(reviews);
+    });
+
+    app.put('/reviews/:id', async(req, res) =>{
+        const id = req.params.id;
+        const filter = {_id: ObjectId(id)};
+        const options = { upsert: true };
+        const message = req.body;
+        console.log(message);
+        const updateUser = {$set: {
+            message: message.message
+        }}
+        const result = await reviewsCollection.updateOne(filter, updateUser, options);
+        res.send(result);
     });
 
     app.post('/reviews', async(req, res) =>{
