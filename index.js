@@ -19,14 +19,23 @@ const run = async() =>{
     const reviewsCollection = client.db("pixelCloud").collection("reviews");
     app.get('/packages', async(req, res) =>{
         const query = {};
-        const cursor = packagesCollection.find(query);
+        const options = {
+            sort: { publishTime: -1 },
+            projection: { _id: 0, publishTime: 1},
+          };
+        const cursor = packagesCollection.find(query, options);
         const packages = await cursor.toArray();
+        console.log(packages);
         res.send(packages);
     });
 
     app.get('/packages/home', async(req, res) =>{
         const query = {};
-        const cursor = packagesCollection.find(query).limit(3);
+        const options = {
+            sort: { publishTime: -1 },
+            projection: { _id: 0, publishTime: 1},
+          };
+        const cursor = packagesCollection.find(query, options).limit(3);
         const packages = await cursor.toArray();
         res.send(packages);
     });
