@@ -16,6 +16,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 const run = async() =>{
     try{
     const packagesCollection = client.db("pixelCloud").collection("packages");
+    const reviewsCollection = client.db("pixelCloud").collection("reviews");
     app.get('/packages', async(req, res) =>{
         const query = {};
         const cursor = packagesCollection.find(query);
@@ -26,9 +27,40 @@ const run = async() =>{
     app.get('/packages/:id', async(req, res) =>{
         const id = req.params.id;
         const query = {_id: ObjectId(id)};
-        console.log(query);
         const eachPackage = await packagesCollection.findOne(query);
         res.send(eachPackage);
+    });
+
+    app.get('/reviews', async(req, res) =>{
+        const query = {};
+        const cursor = reviewsCollection.find(query);
+        const reviews = await cursor.toArray();
+        res.send(reviews);
+    });
+
+    app.get('/reviews', async(req, res) =>{
+        console.log(req.query);
+        let query = {};
+        if(req.query.packageId){
+            query = {packageId: req.query.packageId};
+        }
+        const cursor = reviewsCollection.find(query);
+        const reviews = await cursor.toArray();
+        res.send(reviews);
+    });
+
+    app.post('/reviews', async(req, res) =>{
+        const review = req.body;
+        console.log(review);
+        const result = await reviewsCollection.insertOne(review);
+        res.send(result);
+    });
+
+    app.delete('/reviews/id', async(req, res) =>{
+        const id = req.params.id;
+        const query = {packageId: id};
+        const result = await reviewsCollection.deleteOne(query);
+        res.send(result);
     });
     }
     finally{
