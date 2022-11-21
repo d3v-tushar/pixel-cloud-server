@@ -55,13 +55,6 @@ const run = async() =>{
     });
 
     app.get('/reviews', async(req, res) =>{
-        const query = {};
-        const cursor = reviewsCollection.find(query);
-        const reviews = await cursor.toArray();
-        res.send(reviews);
-    });
-
-    app.get('/reviews', async(req, res) =>{
         let query = {};
         if(req.query.packageId){
             query = {
@@ -73,24 +66,26 @@ const run = async() =>{
         res.send(reviews);
     });
 
-    app.get('/reviews', async(req, res) =>{
+    //API For My Reviews Page
+    app.get('/myreviews', async(req, res) =>{
         let query = {};
         if(req.query.email){
             query = {
                 email: req.query.email
             }
-        }
+        };
         const cursor = reviewsCollection.find(query);
         const reviews = await cursor.toArray();
         res.send(reviews);
     });
 
+    //API for Editing Review
     app.put('/reviews/:id', async(req, res) =>{
         const id = req.params.id;
         const filter = {_id: ObjectId(id)};
         const options = { upsert: true };
         const message = req.body;
-        console.log(message);
+        // console.log(message);
         const updateUser = {$set: {
             message: message.message
         }}
