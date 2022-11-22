@@ -51,7 +51,7 @@ const run = async() =>{
           };
         const cursor = packagesCollection.find(query, options);
         const packages = await cursor.toArray();
-        console.log(packages);
+        //console.log(packages);
         res.send(packages);
     });
 
@@ -74,7 +74,7 @@ const run = async() =>{
 
     app.post('/packages', async(req, res) =>{
         const review = req.body;
-        console.log(review);
+        //console.log(review);
         const result = await packagesCollection.insertOne(review);
         res.send(result);
     });
@@ -125,7 +125,7 @@ const run = async() =>{
 
     app.post('/reviews', async(req, res) =>{
         const review = req.body;
-        console.log(review);
+        //console.log(review);
         const result = await reviewsCollection.insertOne(review);
         res.send(result);
     });
